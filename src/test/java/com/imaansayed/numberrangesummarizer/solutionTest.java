@@ -1,5 +1,4 @@
 package com.imaansayed.numberrangesummarizer;
-// package numberrangesummarizer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -8,8 +7,12 @@ import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
-class solutionTest {    
+/** 
+ * Units tests for Solution.java
+ * @author Imaan Sayed
+ */
 
+class solutionTest {    
 
 // collect() tests-----------------------
 
