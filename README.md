@@ -40,18 +40,21 @@ Solution:
 
 3.2 Solutions Considerations
  - style, incorporating Java8+:
+   
     Style focusses on readability and simplicity. Where two equivalent solutions
     have the same optimisation, the simpler implementation is used as a facet of 
     "good code design designs for others" (i.e. readability for maintainability).
     For example, the parseIntegerList may have been implemented as a chain of Stream -> Map -> ParseInt, but requires more dependancy, and has more failure points in understanding the code, while still having an O(n) complexity like the for loop solution.
 
  - robustness
+   
     Methods are designed to have indiivudal functions for easier debugging 
     and improve function design modularity.
     For example, producing a counter map in summarizeCollection() is a reusable
     function, so is implemented as a seperate method.
 
 - best practices
+  
     By breaking up the logic into multiple methods, each with fewer decision points, the cyclomatic complexity of the main method is reduced to improve testability.
 
     See above in robustness. Project is implemented as a standard Maven project. Maven was learnt
