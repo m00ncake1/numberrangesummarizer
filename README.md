@@ -39,25 +39,25 @@ Solution:
 - The collect method is only considered in the scope of the summarize method, so doesn't have to accomodate non-list collections as used here.
 
 3.2 Solutions Considerations
- *   - style, incorporating Java8+
-Style focusses on readability and simplicity. Where two equivalent solutions
-have the same optimisation, the simpler implementation is used as a facet of 
-"good code design designs for others" (i.e. readability for maintainability).
- For example, the parseIntegerList may have been implemented as a chain of Stream -> Map -> ParseInt, but requires more dependancy, and has more failure points in understanding the code, while still having an O(n) complexity like the for loop solution.
+ - style, incorporating Java8+:
+    Style focusses on readability and simplicity. Where two equivalent solutions
+    have the same optimisation, the simpler implementation is used as a facet of 
+    "good code design designs for others" (i.e. readability for maintainability).
+    For example, the parseIntegerList may have been implemented as a chain of Stream -> Map -> ParseInt, but requires more dependancy, and has more failure points in understanding the code, while still having an O(n) complexity like the for loop solution.
 
- *   - robustness
-Methods are designed to have indiivudal functions for easier debugging 
-and improve function design modularity.
-For example, producing a counter map in summarizeCollection() is a reusable
-function, so is implemented as a seperate method.
+ - robustness
+    Methods are designed to have indiivudal functions for easier debugging 
+    and improve function design modularity.
+    For example, producing a counter map in summarizeCollection() is a reusable
+    function, so is implemented as a seperate method.
 
- *   - best practices
- By breaking up the logic into multiple methods, each with fewer decision points, the cyclomatic complexity of the main method is reduced to improve testability.
+- best practices
+    By breaking up the logic into multiple methods, each with fewer decision points, the cyclomatic complexity of the main method is reduced to improve testability.
 
- See above in robustness. Project is implemented as a standard Maven project. Maven was learnt
- specifically for the sake of this project, as build tools like Maven were described as best practice for portable, standard java project set up, execution and builds when research was conducted.
+    See above in robustness. Project is implemented as a standard Maven project. Maven was learnt
+    specifically for the sake of this project, as build tools like Maven were described as best practice for portable, standard java project set up, execution and builds when research was conducted.
 
- Project uses "java standards" wherever possible, e.g. JUnit tests, docstrings for documentation, and Maven for builds/execution.
- Unit tests cover the functionality of "primary" methods, testing (currently) single-use 
- utility methods indirectly therein.
- Unit tests cover both normal and edge cases
+    Project uses "java standards" wherever possible and known, e.g. JUnit tests, docstrings for documentation, and Maven for builds/execution.
+    Unit tests cover the functionality of "primary" methods, testing (currently) single-use 
+    utility methods indirectly therein.
+    Unit tests cover both normal and edge cases
