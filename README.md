@@ -6,8 +6,11 @@ Solution for: Imaan Sayed
 - If you have Maven installed, please see section 1.1
 
 1.1 Execute with Maven
+- To compile all classes and run tests:
+    - mvn clean
+    - mvn install
 - to run only Solution.java: mvn exec:java
-- to run tests: mvn test
+- to run only tests: mvn test
 
 1.2 Execute without Maven
 - To run Solution:

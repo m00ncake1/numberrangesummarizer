@@ -60,9 +60,8 @@ public String summarizeCollection(Collection<Integer> input) {
     
   // Create hashmap of each integer and its frequency
   // Used to handle repeated numbers and to create set of input elements
-    Map<Integer, Long> numberCounts = input.stream()
-            .collect(Collectors.groupingBy(num -> num, TreeMap::new, Collectors.counting()));
-    
+    Map<Integer, Long> numberCounts = getCounterMap(input);
+
     // Create sorted arraylist with ONLY unique elements
     // 0 and 1 length lists have O(1) sorting cost, so premature sorting not a liability
     List<Integer> sortedList = new ArrayList<>(numberCounts.keySet());
@@ -106,6 +105,7 @@ private int findRangeEnd(List<Integer> sortedList, int rangeStart) {
 
 /**
  * Adds a range or individual numbers to the result.
+ * 
  */
 private void addRangeToResult(List<Integer> sortedList, int rangeStart, int rangeEnd, Map<Integer, Long> numberCounts, StringJoiner result) {
   int startIntVal = sortedList.get(rangeStart);
@@ -125,6 +125,15 @@ private void addRangeToResult(List<Integer> sortedList, int rangeStart, int rang
   }
 }
 
+/** Creates a TreeMap of each item in input collection (key) 
+ * and its frequency therein (value) */
+private Map<Integer,Long> getCounterMap(Collection<Integer> input){
+  return input.stream()
+            .collect(
+              Collectors.groupingBy(
+                num -> num, TreeMap::new, Collectors.counting()));
+    
+}
 public  static void main(String[] args){
   Solution sol = new Solution();
   System.out.println( sol.summarizeCollection(sol.collect("40,41,42,42,42")));
