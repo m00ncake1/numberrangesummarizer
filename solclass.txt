@@ -1,0 +1,84 @@
+// Source code is decompiled from a .class file using FernFlower decompiler.
+package src.main.numberrangesummarizer;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.StringJoiner;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
+
+public class Solution implements NumberRangeSummarizer {
+   public Solution() {
+   }
+
+   private List<Integer> parseIntegerList(String[] var1) {
+      ArrayList var2 = new ArrayList();
+
+      try {
+         String[] var3 = var1;
+         int var4 = var1.length;
+
+         for(int var5 = 0; var5 < var4; ++var5) {
+            String var6 = var3[var5];
+            var2.add(Integer.valueOf(var6.strip()));
+         }
+
+         return var2;
+      } catch (NumberFormatException var7) {
+         throw new IllegalArgumentException("Expected String[] integer list, got something else.\n Possibly bad delimeter or non-int number.", var7);
+      }
+   }
+
+   public Collection<Integer> collect(String var1) {
+      if (var1 != null && !var1.isEmpty()) {
+         String[] var2 = var1.split(",");
+         return this.parseIntegerList(var2);
+      } else {
+         return List.of();
+      }
+   }
+
+   public String summarizeCollection(Collection<Integer> var1) {
+      Map var2 = (Map)var1.stream().collect(Collectors.groupingBy((var0) -> {
+         return var0;
+      }, TreeMap::new, Collectors.counting()));
+      ArrayList var3 = new ArrayList(var2.keySet());
+      Collections.sort(var3);
+      if (var3.isEmpty()) {
+         return "Empty input";
+      } else if (var3.size() == 1 && (Long)var2.get(var3.get(0)) == 1L) {
+         return ((Integer)var3.get(0)).toString();
+      } else {
+         StringJoiner var4 = new StringJoiner(", ");
+
+         int var6;
+         for(int var5 = 0; var5 < var3.size(); var5 = var6 + 1) {
+            int var7 = (Integer)var3.get(var5);
+
+            for(var6 = var5; var6 + 1 < var3.size() && (Integer)var3.get(var6 + 1) - (Integer)var3.get(var6) == 1; ++var6) {
+            }
+
+            int var8 = (Integer)var3.get(var6);
+            if (var6 > var5) {
+               var4.add("" + var7 + "-" + var8);
+            } else {
+               var4.add(String.valueOf(var7));
+
+               for(int var9 = 1; (long)var9 < (Long)var2.get(var8); ++var9) {
+                  var4.add(String.valueOf(var8));
+               }
+            }
+         }
+
+         return var4.toString();
+      }
+   }
+
+   public static void main(String[] var0) {
+      Solution var1 = new Solution();
+      System.out.println(var1.summarizeCollection(var1.collect("40,41,42,42,42")));
+   }
+}

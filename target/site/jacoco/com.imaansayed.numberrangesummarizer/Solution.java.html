@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Solution.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">numberrangesummarizer</a> &gt; <a href="index.source.html" class="el_package">com.imaansayed.numberrangesummarizer</a> &gt; <span class="el_source">Solution.java</span></div><h1>Solution.java</h1><pre class="source lang-java linenums">package com.imaansayed.numberrangesummarizer;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+/**
+ * Solution for NmberRangeSummarizer problem of impact.com assessment
+ * @author Imaan Sayed
+ */
+<span class="fc" id="L10">public class Solution implements NumberRangeSummarizer {</span>
+    
+/**
+* Accepts String[] list of integers and returns ArrayList&lt;Integer&gt; 
+* Throws IllegalArgumentException for any non-integer string in list, e.g. 5.0.
+* If primary method receives bad delimeter, will be treated be as a bad list item and expect an int here.
+* Therefore, bad input also caught here treated as possibly also bad delimeter in String input.
+* @param  input  A string list of integers
+* @return      ArrayList&lt;Integer&gt;
+*/
+private List&lt;Integer&gt; parseIntegerList(String[] stringArr){
+<span class="fc" id="L21">    ArrayList&lt;Integer&gt; intList = new ArrayList&lt;Integer&gt;();</span>
+
+    try {
+<span class="fc bfc" id="L24" title="All 2 branches covered.">        for(String num : stringArr) intList.add(Integer.valueOf(</span>
+<span class="fc" id="L25">                                                num.strip()));</span>
+      }
+<span class="fc" id="L27">      catch(NumberFormatException e) {</span>
+<span class="fc" id="L28">        throw new IllegalArgumentException(&quot;Expected String[] integer list, got something else.\n Possibly bad delimeter or non-int number.&quot;, e);</span>
+        
+<span class="fc" id="L30">      }</span>
+<span class="fc" id="L31">    return intList;</span>
+}
+    
+/**
+* Accepts a string representing a list of integers, e.g. &quot;1,20,4,5,9&quot; and
+* returns it parsed as an ArrayList&lt;Integer&gt;
+* @param  input  A string representing a list of integers
+* @return      ArrayList&lt;Integer&gt;
+*/
+@Override
+public  Collection&lt;Integer&gt; collect(String input){
+<span class="pc bpc" id="L42" title="1 of 4 branches missed.">  if (input == null || input.isEmpty()) {</span>
+<span class="fc" id="L43">    return List.of();</span>
+  }
+  // convert string -&gt; string[]
+<span class="fc" id="L46">  String[] stringNums = input.split(&quot;,&quot;);</span>
+
+<span class="fc" id="L48">  return parseIntegerList(stringNums);</span>
+};
+
+  /**
+* Accepts a Collection of Integers and
+* returns an ordered string list of numbers and sequential ranges,
+* e.g. &quot;1, 5, 9-12, 14&quot;
+* @param input A sorted or unsorted Collection&lt;Integer&gt; e.g. ArrayList&lt;Integer&gt;
+* @return      Sorted string list of integers, and ranges where integers are sequential
+*/
+@Override
+public String summarizeCollection(Collection&lt;Integer&gt; input) {
+    
+  // Create hashmap of each integer and its frequency
+  // Used to handle repeated numbers and to create set of input elements
+<span class="fc" id="L63">    Map&lt;Integer, Long&gt; numberCounts = input.stream()</span>
+<span class="fc" id="L64">            .collect(Collectors.groupingBy(num -&gt; num, TreeMap::new, Collectors.counting()));</span>
+    
+    // Create sorted arraylist with ONLY unique elements
+    // 0 and 1 length lists have O(1) sorting cost, so premature sorting not a liability
+<span class="fc" id="L68">    List&lt;Integer&gt; sortedList = new ArrayList&lt;&gt;(numberCounts.keySet());</span>
+<span class="fc" id="L69">    Collections.sort(sortedList);</span>
+
+<span class="fc bfc" id="L71" title="All 2 branches covered.">    if (sortedList.isEmpty()) return &quot;Empty input&quot;;</span>
+    
+    // If sortedList has ONE item, that only occurs once...
+<span class="fc bfc" id="L74" title="All 2 branches covered.">    if (sortedList.size() == 1 </span>
+<span class="pc bpc" id="L75" title="1 of 2 branches missed.">        &amp;&amp; numberCounts.get(sortedList.get(0)) == 1) {</span>
+<span class="nc" id="L76">        return sortedList.get(0).toString();</span>
+    }
+
+<span class="fc" id="L79">    StringJoiner result = new StringJoiner(&quot;, &quot;);</span>
+
+    // range pointers
+<span class="fc" id="L82">    int rStart = 0;</span>
+    int rEnd;
+
+    // Generate ranges and individual numbers
+<span class="fc bfc" id="L86" title="All 2 branches covered.">    for (int i = 0; i &lt; sortedList.size(); ) {</span>
+<span class="fc" id="L87">      rStart = i;</span>
+<span class="fc" id="L88">      rEnd = findRangeEnd(sortedList, rStart);</span>
+<span class="fc" id="L89">      addRangeToResult(sortedList, rStart, rEnd, numberCounts, result);</span>
+<span class="fc" id="L90">      i = rEnd + 1;</span>
+      }
+<span class="fc" id="L92">    return result.toString();</span>
+}
+
+private int findRangeEnd(List&lt;Integer&gt; sortedList, int rangeStart) {
+<span class="fc" id="L96">  int rangeEnd = rangeStart;</span>
+
+  // While not at the end of the list, keep checking if not item in order
+  // ...is sequential
+<span class="fc bfc" id="L100" title="All 2 branches covered.">  while (rangeEnd + 1 &lt; sortedList.size() </span>
+<span class="fc bfc" id="L101" title="All 2 branches covered.">        &amp;&amp; sortedList.get(rangeEnd + 1) - sortedList.get(rangeEnd) == 1) {</span>
+<span class="fc" id="L102">      rangeEnd++;</span>
+  }
+<span class="fc" id="L104">  return rangeEnd;</span>
+}
+
+/**
+ * Adds a range or individual numbers to the result.
+ */
+private void addRangeToResult(List&lt;Integer&gt; sortedList, int rangeStart, int rangeEnd, Map&lt;Integer, Long&gt; numberCounts, StringJoiner result) {
+<span class="fc" id="L111">  int startIntVal = sortedList.get(rangeStart);</span>
+<span class="fc" id="L112">  int endIntVal = sortedList.get(rangeEnd);</span>
+
+  // If adjacent numbers form a range
+<span class="fc bfc" id="L115" title="All 2 branches covered.">  if (rangeEnd &gt; rangeStart) {</span>
+<span class="fc" id="L116">      result.add(startIntVal + &quot;-&quot; + endIntVal);</span>
+  } else {
+      // If not part of a range, add the number individually
+<span class="fc" id="L119">      result.add(String.valueOf(startIntVal));</span>
+
+      // If there are duplicates, add each individually
+<span class="fc bfc" id="L122" title="All 2 branches covered.">      for (int i = 1; i &lt; numberCounts.get(endIntVal); i++) {</span>
+<span class="fc" id="L123">          result.add(String.valueOf(endIntVal));</span>
+      }
+  }
+<span class="fc" id="L126">}</span>
+
+public  static void main(String[] args){
+<span class="nc" id="L129">  Solution sol = new Solution();</span>
+<span class="nc" id="L130">  System.out.println( sol.summarizeCollection(sol.collect(&quot;40,41,42,42,42&quot;)));</span>
+<span class="nc" id="L131">}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
